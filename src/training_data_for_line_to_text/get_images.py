@@ -7,7 +7,7 @@ import boto3
 import os
 
 os.environ["AWS_SHARED_CREDENTIALS_FILE"] = "~/.aws/credentials"
-OCR_OUTPUT_BUCKET = "ocr.bdrc.io"
+OCR_OUTPUT_BUCKET = "archive.tbrc.org"
 S3_client = boto3.client("s3")
 
 def get_work_id(img_group):
@@ -84,6 +84,7 @@ def get_hash(work_id):
     two = md5.hexdigest()[:2]
     return two
 
+
 def download_images(work_id,img_group,images,download_path):
     images_path = []
     if download_path is None:
@@ -93,10 +94,10 @@ def download_images(work_id,img_group,images,download_path):
     for image in images:
         object_key = f"Works/{hash_two}/{work_id}/images/{work_id}-{img_group}/{image}"
         try:
-            S3_client.download_file(OCR_OUTPUT_BUCKET, object_key, download_path)
+            S3_client.download_file(OCR_OUTPUT_BUCKET, object_key, download_path+f"/{image}")
             images_path.append(download_path)
             print("Object downloaded successfully.")
-        except Exception as e:
+        except boto3.botocore.errorfactory.ClientError as e:
             print("Error:", str(e))
     return images_path
 

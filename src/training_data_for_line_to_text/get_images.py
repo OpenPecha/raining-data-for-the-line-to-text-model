@@ -1,12 +1,10 @@
-import re
 from pathlib import Path
-from openpecha.buda import api
+import re
 import requests
 import hashlib
 import rdflib
 import boto3
 import os
-from rdflib import Graph
 
 os.environ["AWS_SHARED_CREDENTIALS_FILE"] = "~/.aws/credentials"
 OCR_OUTPUT_BUCKET = "ocr.bdrc.io"
@@ -15,7 +13,7 @@ S3_client = boto3.client("s3")
 def get_work_id(img_group):
     url = f"https://purl.bdrc.io/resource/{img_group}.ttl"
     res = requests.get(url)
-    g = Graph()
+    g = rdflib.Graph()
     try:
         g.parse(data=res.text, format="ttl")
     except:
@@ -40,7 +38,7 @@ def get_work_id(img_group):
         work_id = match.group(1)
         return work_id
     else:
-        print("work ID not found in the URL.")
+        print("Work ID not found in the URL.")
 
 
 def get_img_group_and_image(url):

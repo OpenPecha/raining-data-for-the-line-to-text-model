@@ -84,7 +84,6 @@ def get_hash(work_id):
     two = md5.hexdigest()[:2]
     return two
 
-
 def download_images(work_id,img_group,images,download_path):
     images_path = []
     if download_path is None:

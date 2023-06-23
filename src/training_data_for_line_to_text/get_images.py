@@ -88,6 +88,7 @@ def get_hash(work_id):
     return two
 
 def download_images(work_id,img_group,images,download_path):
+    images = []
     if download_path is None:
         download_path = "./images"
         Path(download_path).mkdir(parents=False)
@@ -99,20 +100,23 @@ def download_images(work_id,img_group,images,download_path):
 
         try:
             S3_client.download_file(OCR_OUTPUT_BUCKET, object_key, download_path)
+            images.append(download_path)
             print("Object downloaded successfully.")
         except Exception as e:
             print("Error:", str(e))
+    return images
 
 
-def main(text_path,download_path=None):
+def get_images(text_path,download_path=None):
     url = get_url(text_path)
     img_group,img_name = get_img_group_and_image(url)
     no_of_images = get_no_of_images(text_path)
     work_id = get_work_id(img_group)
     images = get_images(img_name,no_of_images)
-    print(images)
-    download_images(work_id,img_group,images,download_path)
+    images_path = download_images(work_id,img_group,images,download_path)
+    return images_path
+
 
 if __name__ == "__main__":
     text_path = "tests/data/test.txt"
-    main(text_path)
+    get_images(text_path)

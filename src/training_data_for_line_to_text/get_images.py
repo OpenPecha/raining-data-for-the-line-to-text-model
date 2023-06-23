@@ -114,5 +114,5 @@ def main(text_path,download_path=None):
     download_images(work_id,img_group,images,download_path)
 
 if __name__ == "__main__":
-    test_path = "tests/data/test.txt"
-    main(test_path)
+    text_path = "tests/data/test.txt"
+    main(text_path)

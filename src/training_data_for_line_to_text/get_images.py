@@ -98,7 +98,7 @@ def download_images(work_id,img_group,images,download_path):
             images_path.append(download_path)
             print("Object downloaded successfully.")
         except boto3.botocore.errorfactory.ClientError as e:
-            print("Error:", str(e))
+            print(f"{image} not available in S3")
     return images_path
 
 def get_images(text_path,download_path=None):

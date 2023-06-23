@@ -40,7 +40,6 @@ def get_work_id(img_group):
     else:
         print("Work ID not found in the URL.")
 
-
 def get_img_group_and_image(url):
     ex = re.compile(r"bdr:(.*?)::([^/]+)")
     match = ex.search(url)
@@ -64,7 +63,7 @@ def get_no_of_images(text_path):
     num_images = len(images)
     return num_images
 
-def get_images(img_name,no_of_images):
+def get_images_name(img_name,no_of_images):
     images = [img_name]
     pattern = r"^(.*?)(\d+)\.(.*)$"
     match = re.search(pattern, img_name)
@@ -86,31 +85,27 @@ def get_hash(work_id):
     return two
 
 def download_images(work_id,img_group,images,download_path):
-    images = []
+    images_path = []
     if download_path is None:
         download_path = "./images"
         Path(download_path).mkdir(parents=False)
     hash_two = get_hash(work_id)
     for image in images:
         object_key = f"Works/{hash_two}/{work_id}/images/{work_id}-{img_group}/{image}"
-        print(object_key)
-        S3_client.download_file(OCR_OUTPUT_BUCKET, object_key, download_path)
-
         try:
             S3_client.download_file(OCR_OUTPUT_BUCKET, object_key, download_path)
-            images.append(download_path)
+            images_path.append(download_path)
             print("Object downloaded successfully.")
         except Exception as e:
             print("Error:", str(e))
-    return images
-
+    return images_path
 
 def get_images(text_path,download_path=None):
     url = get_url(text_path)
     img_group,img_name = get_img_group_and_image(url)
     no_of_images = get_no_of_images(text_path)
     work_id = get_work_id(img_group)
-    images = get_images(img_name,no_of_images)
+    images = get_images_name(img_name,no_of_images)
     images_path = download_images(work_id,img_group,images,download_path)
     return images_path
 
